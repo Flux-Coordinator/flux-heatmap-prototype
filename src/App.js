@@ -31,14 +31,15 @@ class App extends Component {
         return (
             <div className="App">
                 <div style={{
-                    width: window.innerWidth,
-                    height: window.innerHeight,
+                    width: 3158/4,
+                    height: 3389/4,
+                    margin: "auto",
                     backgroundImage: "url(" + Background + ")",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "contain"
                 }}>
-                    <ReactHeatmap max={100} data={this.state.readings}/>
+                    <ReactHeatmap max={100} data={this.state.readings} unit={"percent"}/>
                 </div>
             </div>
         );
