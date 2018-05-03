@@ -36,10 +36,10 @@ class ReactHeatmap extends Component {
     }
 
     computeData(data) {
+        let container = {};
+        container.width = ReactDOM.findDOMNode(this).offsetWidth;
+        container.height = ReactDOM.findDOMNode(this).offsetHeight;
         if (this.props.unit === 'percent') {
-            let container = {};
-            container.width = ReactDOM.findDOMNode(this).offsetWidth;
-            container.height = ReactDOM.findDOMNode(this).offsetHeight;
             return data.map(function (values, index) {
                 return {
                     x: Math.round(values.x / 100 * container.width),
@@ -48,10 +48,14 @@ class ReactHeatmap extends Component {
                 };
             });
         } else if (this.props.unit === 'coordinates') {
+            let transformation = {};
+            transformation.xOffset = this.props.xOffset;
+            transformation.yOffset = this.props.yOffset;
+            transformation.scaleFactor = this.props.scaleFactor;
             return data.reduce(function (result, values) {
-                let x = Math.round((values.x + this.props.xOffset) * this.props.scaleFactor);
-                let y = Math.round((values.y + this.props.yOffset) * this.props.scaleFactor);
-                if (x >= 0 && y >= 0 && x <= ReactDOM.findDOMNode(this).offsetWidth && y <= ReactDOM.findDOMNode(this).offsetHeight) {
+                let x = Math.round((values.x + transformation.xOffset) * transformation.scaleFactor);
+                let y = Math.round((values.y + transformation.yOffset) * transformation.scaleFactor);
+                if (x >= 0 && y >= 0 && x <= container.width && y <= container.height) {
                     result.push({
                         x: x,
                         y: y,

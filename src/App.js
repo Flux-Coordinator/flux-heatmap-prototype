@@ -39,7 +39,7 @@ class App extends Component {
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "contain"
                 }}>
-                    <ReactHeatmap max={100} data={this.state.readings} unit={"percent"}/>
+                    <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"}/>
                 </div>
             </div>
         );
