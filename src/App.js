@@ -13,6 +13,14 @@ class App extends Component {
     }
 
     componentDidMount() {
+        this.timer = setInterval(this.fetch, 500);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timer);
+    }
+
+    fetch = () => {
         fetch('http://localhost:9000/measurements').then(results => {
             return results.json();
         }).then(data => {
@@ -26,21 +34,22 @@ class App extends Component {
             });
             this.setState({readings: readings});
         })
-    }
+    };
 
     render() {
         return (
             <div className="App">
                 <div style={{
-                    width: 3158/4,
-                    height: 3389/4,
+                    width: 3158 / 4,
+                    height: 3389 / 4,
                     margin: "auto",
                     backgroundImage: "url(" + Background + ")",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "contain"
                 }}>
-                    <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"} xOffset={400} yOffset={75} scaleFactor={0.045} />
+                    <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"} xOffset={400} yOffset={75}
+                                  scaleFactor={0.035}/>
                 </div>
             </div>
         );
