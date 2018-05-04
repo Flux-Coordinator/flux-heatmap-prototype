@@ -16,10 +16,11 @@ class App extends Component {
         fetch('http://localhost:9000/measurements').then(results => {
             return results.json();
         }).then(data => {
+            console.log("Fetched data:");
             let readings = data[0].readings.map((reading) => {
-                let x = reading.xposition * 100;
-                let y = reading.yposition * 100;
-                let value = reading.luxValue * 100;
+                let x = reading.xposition;
+                let y = reading.yposition;
+                let value = reading.luxValue;
                 console.log(x + " : " + y + " : " + value);
                 return {x: x, y: y, value: value};
             });
@@ -39,7 +40,7 @@ class App extends Component {
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "contain"
                 }}>
-                    <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"}/>
+                    <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"} xOffset={400} yOffset={75} scaleFactor={0.045} />
                 </div>
             </div>
         );
