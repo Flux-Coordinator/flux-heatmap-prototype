@@ -21,15 +21,20 @@ class ReactHeatmap extends Component {
     }
 
     setData(max, data) {
-        this.heatmap.setData({
-            max: this.computeMax(max, data),
-            data: this.computeData(data)
-        });
+        if (data.length > 0) {
+            console.log("Transformed data:");
+            this.heatmap.setData({
+                max: this.computeMax(max, data),
+                data: this.computeData(data)
+            });
+        }
     }
 
     computeMax(max, data) {
         if (this.props.unit === 'coordinates') {
-            return Math.max.apply(Math, data);
+            let maxValue = Math.max(...data.map(v => parseInt(v.value, 10)));
+            console.log("Max: " + maxValue);
+            return maxValue;
         } else {
             return max;
         }
@@ -53,8 +58,9 @@ class ReactHeatmap extends Component {
             transformation.yOffset = this.props.yOffset;
             transformation.scaleFactor = this.props.scaleFactor;
             return data.reduce(function (result, values) {
-                let x = Math.round((values.x + transformation.xOffset) * transformation.scaleFactor);
-                let y = Math.round((values.y + transformation.yOffset) * transformation.scaleFactor);
+                let x = Math.round(values.x * transformation.scaleFactor + transformation.xOffset);
+                let y = container.height - Math.round(values.y * transformation.scaleFactor + transformation.yOffset);
+                console.log("-> " + x + " : " + y + " : " + values.value);
                 if (x >= 0 && y >= 0 && x <= container.width && y <= container.height) {
                     result.push({
                         x: x,
