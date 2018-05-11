@@ -1,9 +1,9 @@
-import React, {Component} from 'react';
+import * as React from "react";
 import ReactHeatmap from './ReactHeatmap';
 import './App.css';
 import Background from './images/floor-plan.png';
 
-class App extends Component {
+class App extends React.Component {
 
     constructor() {
         super();
@@ -49,7 +49,12 @@ class App extends Component {
                     backgroundSize: "contain"
                 }}>
                     <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"} xOffset={400} yOffset={75}
-                                  scaleFactor={0.035}/>
+                                  scaleFactor={0.035} configObject={{
+                        radius: 100,
+                        maxOpacity: 0.5,
+                        minOpacity: 0,
+                        blur: 0.75
+                    }}/>
                 </div>
             </div>
         );

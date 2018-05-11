@@ -1,8 +1,28 @@
-import React, {Component} from 'react';
+import * as React from "react";
 import ReactDOM from 'react-dom';
 import Heatmap from 'heatmapjs/build/heatmap.js';
 
-class ReactHeatmap extends Component {
+export default class ReactHeatmap extends React.Component {
+
+    props = {
+        min: 0,
+        max: 5,
+        data: [],
+        configObject: {
+            radius: 10,
+            maxOpacity: 0.5,
+            minOpacity: 0,
+            blur: 0.75
+        },
+        xOffset: 0,
+        yOffset: 0,
+        scaleFactor: 1
+    };
+
+    state = {
+        elementHeight: 0,
+        elementWidth: 0
+    };
 
     constructor(props) {
         super(props);
@@ -10,9 +30,16 @@ class ReactHeatmap extends Component {
     }
 
     componentDidMount() {
-        this.heatmap = Heatmap.create({
+        const height = this.divElement.clientHeight;
+        const width = this.divElement.clientWidth;
+        this.setState({elementHeight: height, elementWidth: width});
+
+        const configObject = Object.assign({
             container: ReactDOM.findDOMNode(this)
-        });
+        }, this.props.configObject);
+
+        this.heatmap = Heatmap.create(configObject);
+
         this.setData(this.props.max, this.props.data);
     }
 
@@ -24,60 +51,45 @@ class ReactHeatmap extends Component {
         if (data.length > 0) {
             console.log("Transformed data:");
             this.heatmap.setData({
-                max: this.computeMax(max, data),
-                data: this.computeData(data)
+                max: this.computeMax(data),
+                data: this.transformData(data)
             });
         }
     }
 
-    computeMax(max, data) {
-        if (this.props.unit === 'coordinates') {
-            let maxValue = Math.max(...data.map(v => parseInt(v.value, 10)));
-            console.log("Max: " + maxValue);
-            return maxValue;
-        } else {
-            return max;
-        }
+    computeMax(data) {
+        let maxValue = Math.max(...data.map(v => parseInt(v.value, 10)));
+        console.log("Max: " + maxValue);
+        return maxValue;
     }
 
-    computeData(data) {
+    transformData(data) {
         let container = {};
-        container.width = ReactDOM.findDOMNode(this).offsetWidth;
-        container.height = ReactDOM.findDOMNode(this).offsetHeight;
-        if (this.props.unit === 'percent') {
-            return data.map(function (values, index) {
-                return {
-                    x: Math.round(values.x / 100 * container.width),
-                    y: Math.round(values.y / 100 * container.height),
+        container.width = this.state.elementWidth;
+        container.height = this.state.elementHeight;
+
+        let transformation = {};
+        transformation.xOffset = this.props.xOffset;
+        transformation.yOffset = this.props.yOffset;
+        transformation.scaleFactor = this.props.scaleFactor;
+        return data.reduce(function (result, values) {
+            let x = Math.round(values.x * transformation.scaleFactor + transformation.xOffset);
+            let y = container.height - Math.round(values.y * transformation.scaleFactor + transformation.yOffset);
+            console.log("-> " + x + " : " + y + " : " + values.value);
+            if (x >= 0 && y >= 0 && x <= container.width && y <= container.height) {
+                result.push({
+                    x: x,
+                    y: y,
                     value: values.value
-                };
-            });
-        } else if (this.props.unit === 'coordinates') {
-            let transformation = {};
-            transformation.xOffset = this.props.xOffset;
-            transformation.yOffset = this.props.yOffset;
-            transformation.scaleFactor = this.props.scaleFactor;
-            return data.reduce(function (result, values) {
-                let x = Math.round(values.x * transformation.scaleFactor + transformation.xOffset);
-                let y = container.height - Math.round(values.y * transformation.scaleFactor + transformation.yOffset);
-                console.log("-> " + x + " : " + y + " : " + values.value);
-                if (x >= 0 && y >= 0 && x <= container.width && y <= container.height) {
-                    result.push({
-                        x: x,
-                        y: y,
-                        value: values.value
-                    });
-                }
-                return result;
-            }, []);
-        } else {
-            return data;
-        }
+                });
+            }
+            return result;
+        }, []);
     }
 
     render() {
         return (
-            <div style={{width: '100%', height: '100%'}}></div>
+            <div ref={divElement => (this.divElement = divElement)} style={{width: '100%', height: '100%'}}></div>
         );
     }
 }
@@ -90,5 +102,3 @@ ReactHeatmap.defaultProps = {
     yOffset: 0,
     scaleFactor: 1
 }
-
-export default ReactHeatmap;
