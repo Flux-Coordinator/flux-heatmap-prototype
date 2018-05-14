@@ -29,7 +29,6 @@ class App extends React.Component {
                 let x = reading.xposition;
                 let y = reading.yposition;
                 let value = reading.luxValue;
-                console.log(x + " : " + y + " : " + value);
                 return {x: x, y: y, value: value};
             });
             this.setState({readings: readings});
@@ -48,13 +47,13 @@ class App extends React.Component {
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "contain"
                 }}>
-                    <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"} xOffset={400} yOffset={75}
-                                  scaleFactor={0.035} configObject={{
-                        radius: 10,
-                        maxOpacity: 0.5,
-                        minOpacity: 0,
-                        blur: 0.75
-                    }}/>
+                    <ReactHeatmap data={this.state.readings} xOffset={400} yOffset={75} scaleFactor={0.035}
+                                  configObject={{
+                                      radius: 10,
+                                      maxOpacity: 0.5,
+                                      minOpacity: 0,
+                                      blur: 0.75
+                                  }}/>
                 </div>
             </div>
         );

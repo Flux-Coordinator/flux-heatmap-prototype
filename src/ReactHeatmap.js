@@ -4,9 +4,8 @@ import Heatmap from 'heatmapjs/build/heatmap.js';
 
 export default class ReactHeatmap extends React.Component {
 
-    props = {
+    static defaultProps = {
         min: 0,
-        max: 5,
         data: [],
         configObject: {
             radius: 10,
@@ -40,16 +39,20 @@ export default class ReactHeatmap extends React.Component {
 
         this.heatmap = Heatmap.create(configObject);
 
-        this.setData(this.props.max, this.props.data);
+        this.setData(this.props.data);
     }
 
-    componentWillReceiveProps(newProps) {
-        this.setData(newProps.max, newProps.data);
+    componentDidUpdate(prevProps, prevState) {
+        this.setData(this.props.data);
+        this.setConfig(this.props.configObject);
     }
 
-    setData(max, data) {
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.data.length !== nextProps.data.length || this.props.configObject.blur !== nextProps.configObject.blur;
+    }
+
+    setData(data) {
         if (data.length > 0) {
-            console.log("Transformed data:");
             this.heatmap.setData({
                 max: this.computeMax(data),
                 data: this.transformData(data)
@@ -57,9 +60,12 @@ export default class ReactHeatmap extends React.Component {
         }
     }
 
+    setConfig(configObject) {
+        this.heatmap.configure(configObject)
+    }
+
     computeMax(data) {
         let maxValue = Math.max(...data.map(v => parseInt(v.value, 10)));
-        console.log("Max: " + maxValue);
         return maxValue;
     }
 
@@ -75,7 +81,6 @@ export default class ReactHeatmap extends React.Component {
         return data.reduce(function (result, values) {
             let x = Math.round(values.x * transformation.scaleFactor + transformation.xOffset);
             let y = container.height - Math.round(values.y * transformation.scaleFactor + transformation.yOffset);
-            console.log("-> " + x + " : " + y + " : " + values.value);
             if (x >= 0 && y >= 0 && x <= container.width && y <= container.height) {
                 result.push({
                     x: x,
@@ -93,18 +98,3 @@ export default class ReactHeatmap extends React.Component {
         );
     }
 }
-
-ReactHeatmap.defaultProps = {
-    min: 0,
-    max: 5,
-    data: [],
-    configObject: {
-        radius: 10,
-        maxOpacity: 0.5,
-        minOpacity: 0,
-        blur: 0.75
-    },
-    xOffset: 0,
-    yOffset: 0,
-    scaleFactor: 1
-};
