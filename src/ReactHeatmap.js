@@ -95,10 +95,16 @@ export default class ReactHeatmap extends React.Component {
 }
 
 ReactHeatmap.defaultProps = {
+    min: 0,
     max: 5,
     data: [],
-    unit: 'coordinates',
+    configObject: {
+        radius: 10,
+        maxOpacity: 0.5,
+        minOpacity: 0,
+        blur: 0.75
+    },
     xOffset: 0,
     yOffset: 0,
     scaleFactor: 1
-}
+};

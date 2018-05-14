@@ -50,7 +50,7 @@ class App extends React.Component {
                 }}>
                     <ReactHeatmap max={100} data={this.state.readings} unit={"coordinates"} xOffset={400} yOffset={75}
                                   scaleFactor={0.035} configObject={{
-                        radius: 100,
+                        radius: 10,
                         maxOpacity: 0.5,
                         minOpacity: 0,
                         blur: 0.75
