@@ -66,8 +66,7 @@ export default class ReactHeatmap extends React.Component {
     }
 
     computeMax(data) {
-        let maxValue = Math.max(...data.map(v => parseInt(v.value, 10)));
-        return maxValue;
+        return Math.max(...data.map(v => parseInt(v.value, 10)));
     }
 
     transformData(data) {
