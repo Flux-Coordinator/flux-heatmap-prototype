@@ -1,7 +1,6 @@
 import * as React from "react";
 import ReactHeatmap from './ReactHeatmap';
 import './App.css';
-import Background from './images/floor-plan.png';
 
 class App extends React.Component {
 
@@ -41,10 +40,6 @@ class App extends React.Component {
                     width: 3158 / 4,
                     height: 3389 / 4,
                     margin: "auto",
-                    backgroundImage: "url(" + Background + ")",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: "contain"
                 }}>
                     <ReactHeatmap data={this.state.readings} xOffset={400} yOffset={75} scaleFactor={0.035}
                                   configObject={{

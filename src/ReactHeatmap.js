@@ -1,6 +1,7 @@
 import * as React from "react";
 import ReactDOM from 'react-dom';
 import Heatmap from 'heatmapjs/build/heatmap.js';
+import Background from './images/floor-plan.png';
 
 export default class ReactHeatmap extends React.Component {
 
@@ -94,7 +95,9 @@ export default class ReactHeatmap extends React.Component {
 
     render() {
         return (
-            <div ref={divElement => (this.divElement = divElement)} style={{width: '100%', height: '100%'}}></div>
+            <div ref={divElement => (this.divElement = divElement)} style={{float: 'left'}}>
+                <img src={Background} style={{display: 'block', maxWidth: '100%', maxHeight: '100%'}}/>
+            </div>
         );
     }
 }
