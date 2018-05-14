@@ -24,7 +24,6 @@ class App extends React.Component {
         fetch('http://localhost:9000/measurements').then(results => {
             return results.json();
         }).then(data => {
-            console.log("Fetched data:");
             let readings = data[0].readings.map((reading) => {
                 let x = reading.xposition;
                 let y = reading.yposition;
